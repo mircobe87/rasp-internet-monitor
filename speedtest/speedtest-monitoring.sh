@@ -7,12 +7,14 @@ SERVER_ID=5011
 
 OUTPUT=$(speedtest -s $SERVER_ID -f csv -u B/s)
 #echo $OUTPUT
+IFS=','
 
-SERVER=$(echo $OUTPUT | sed -r 's/^"([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)"$/\1/i')
-LATENCY=$(echo $OUTPUT | sed -r 's/^"([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)"$/\3/i')
-DOWNLOAD=$(echo $OUTPUT | sed -r 's/^"([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)"$/\6/i')
-UPLOAD=$(echo $OUTPUT | sed -r 's/^"([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)","([^,"]+)"$/\7/i')
+read -a strarr <<< "$OUTPUT"
 
+SERVER=$(sed -e 's/^"//' -e 's/"$//' <<< ${strarr[0]})
+LATENCY=$(sed -e 's/^"//' -e 's/"$//' <<< ${strarr[2]})
+DOWNLOAD=$(sed -e 's/^"//' -e 's/"$//' <<< ${strarr[5]})
+UPLOAD=$(sed -e 's/^"//' -e 's/"$//' <<< ${strarr[6]})
 
 cat << EOF | curl --data-binary @- http://localhost:9099/metrics/job/speedtest
 # TYPE latency gauge
