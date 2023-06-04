@@ -57,8 +57,8 @@ EOF
 6. Reload systemd configuration, start the service and set it up to start automatically at system startup.
 ```
 sudo systemctl daemon-reload
-sudo start pushgateway
-sudo enable pushgateway
+sudo systemctl start pushgateway
+sudo systemctl enable pushgateway
 ```
 7. You can check the exposed metrics by the pushgateway visiting http://localhost:9099
 
